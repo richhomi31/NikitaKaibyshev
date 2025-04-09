@@ -1,0 +1,65 @@
+#1ZADANIE
+cort1 = (([1, 2], ['012', 'abc']), [4, 3])
+print(cort1[0][1][1][2])
+#2ZADANIE
+cort2 = (42, 3.14, 1 + 2j, ('Hello', (), []))
+print(cort2[3][0])
+#3ZADANIE
+cort3 = (10, (3.14, (1 + 2j, (('Hello, World!', ())))))
+print(cort3[1][1][1][0])
+#4ZADANIE
+cort4 = (1, 2, 3, 4, 5)
+print(cort4[0], cort4[2], cort4[:3])
+print(cort4[-5], cort4[-3], cort4[-5:-2])
+#5ZADANIE
+cort5 = ((1, 2, ('Ok!', 3)), ('tuple', 4), 5)
+print(cort5[0][2][0])
+#6ZADANIE
+cort6 = (3, 's', 1, 5, 's')
+print(len(cort6), cort6.count('s'), cort6.index('s'))
+#7ZADANIE
+cort7 = (['кит', 1, 3], 5)
+cort7[0][0].replace('кит', 'кот')
+cort7[0].pop(1)
+cort7[0][1] ** 2
+#Умножить 5 на 2 не получится, т.к. кортежи неизменяемы
+print(cort7)
+#8ZADANIE
+cort8_1 = (7, 4, 2, 1, 0, 9)
+cort8_2 = (7, 4, 2, 1, 0, 9.31)
+def tpl_sort(t):
+    if all(isinstance(x, int) for x in t):
+        return tuple(sorted(t))
+    else:
+        return 'Ошиибка: в кортеже есть нецелое число'
+    return t
+print(tpl_sort(cort8_1))
+print(tpl_sort(cort8_2))
+#9ZADANIE
+cort9 = (1, 2, 3, 'a', 'b', 'a', 'c', 2)
+def slicer(tpl, element):
+    if element not in tpl:
+        return ()
+    first_index = tpl.index(element)
+    last_index = tpl[first_index+1:].index(element)
+    return tpl[first_index + 1:last_index + 2]
+print(slicer(cort9, 2))
+#10ZADANIE
+from collections import namedtuple
+Student = namedtuple('Student', ['name', 'age', 'grade', 'city'])
+students = (
+    Student('Чув1', 20, 85, 'Москва'),
+    Student('Чув2', 22, 90, 'СПБ'),
+    Student('Чув3', 18, 67, 'Казань'),
+    Student('Чув4', 19, 55, 'Владик'),
+    Student('Чув5', 21, 99, 'Барнаул')
+)
+
+def goodstudents(students):
+    avg_grade = sum(Student.grade for Student in students) / len(students)
+    good_students = [Student.name for Student in students if Student.grade >= avg_grade]
+
+    if good_students:
+        print(f'Студенты {", ".join(good_students)} - хорошие')
+
+goodstudents(students)
