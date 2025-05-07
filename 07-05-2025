@@ -2,87 +2,96 @@ import csv
 import datetime
 from typing import Dict, List
 
+class Task:
+    def __init__(self, name: str, priority: int, deadline: str = "", status: str = "Не начато"):
+        self.name = name
+        self.priority = priority
+        self.deadline = deadline
+        self.status = status
+
+    def to_dict(self) -> Dict:
+        return {
+            "name": self.name,
+            "priority": self.priority,
+            "deadline": self.deadline,
+            "status": self.status
+        }
 
 class TaskManager:
     def __init__(self):
-        self.tasks = {}
+        self.tasks: Dict[str, Task] = {}
         self.suggested_tasks = [
-            {"name": "Утренняя зарядка", "priority": 2, "deadline": "", "status": "Не начато"},
-            {"name": "Поход в спортзал", "priority": 2, "deadline": "", "status": "Не начато"},
-            {"name": "Ведение дневника", "priority": 1, "deadline": "", "status": "Не начато"},
-            {"name": "Чтение книги", "priority": 1, "deadline": "", "status": "Не начато"}
+            Task("Утренняя зарядка", 2),
+            Task("Поход в спортзал", 2),
+            Task("Ведение дневника", 1),
+            Task("Чтение книги", 1)
         ]
 
-    def add_task(self, name: str, priority: int, deadline: str):
-        self.tasks[name] = {
-            "name": name,
-            "priority": priority,
-            "deadline": deadline,
-            "status": "Не начато"
-        }
+    def add_task(self, name: str, priority: int, deadline: str) -> None:
+        self.tasks[name] = Task(name, priority, deadline)
         print(f"Задача '{name}' добавлена")
 
-    def remove_task(self, name: str):
+    def remove_task(self, name: str) -> None:
         if name in self.tasks:
             del self.tasks[name]
             print(f"Задача '{name}' удалена")
         else:
             print(f"Задача '{name}' не найдена")
 
-    def update_status(self, name: str, status: str):
+    def update_status(self, name: str, status: str) -> None:
         if name in self.tasks:
             if status in ["В работе", "Завершено"]:
-                self.tasks[name]["status"] = status
+                self.tasks[name].status = status
                 print(f"Статус задачи '{name}' изменен на '{status}'")
             else:
                 print("Недопустимый статус. Используйте 'В работе' или 'Завершено'")
         else:
             print(f"Задача '{name}' не найдена")
 
-    def sort_by_priority(self):
-        return sorted(self.tasks.values(), key=lambda x: x["priority"], reverse=True)
+    def sort_by_priority(self) -> List[Task]:
+        return sorted(self.tasks.values(), key=lambda x: x.priority, reverse=True)
 
-    def sort_by_deadline(self):
-        return sorted(self.tasks.values(), key=lambda x: x["deadline"] if x["deadline"] else "9999-12-31")
+    def sort_by_deadline(self) -> List[Task]:
+        return sorted(self.tasks.values(), key=lambda x: x.deadline if x.deadline else "9999-12-31")
 
-    def save_to_csv(self, filename: str):
+    def save_to_csv(self, filename: str) -> None:
         with open(filename, 'w', newline='', encoding='utf-8') as file:
             writer = csv.DictWriter(file, fieldnames=["name", "priority", "deadline", "status"])
             writer.writeheader()
             for task in self.tasks.values():
-                writer.writerow(task)
+                writer.writerow(task.to_dict())
         print(f"Задачи сохранены в {filename}")
 
-    def show_suggested_tasks(self):
+    def show_suggested_tasks(self) -> None:
         print("\nПредложенные задачи:")
         for task in self.suggested_tasks:
-            print(f"Название: {task['name']}, Приоритет: {task['priority']}, Статус: {task['status']}")
+            print(f"Название: {task.name}, Приоритет: {task.priority}, Статус: {task.status}")
 
-    def add_suggested_task(self, task_name: str):
+    def add_suggested_task(self, task_name: str) -> None:
         for task in self.suggested_tasks:
-            if task["name"] == task_name:
-                self.add_task(task["name"], task["priority"],
-                              datetime.date.today().strftime("%Y-%m-%d"))
+            if task.name == task_name:
+                self.add_task(task.name, task.priority,
+                            datetime.date.today().strftime("%Y-%m-%d"))
                 break
         else:
             print(f"Предложенная задача '{task_name}' не найдена")
 
-    def check_overdue_tasks(self):
+    def check_overdue_tasks(self) -> None:
         today = datetime.date.today()
         overdue_found = False
         print("\nПросроченные задачи:")
         for task in self.tasks.values():
-            if task["deadline"] and task["status"] != "Завершено":
+            if task.deadline and task.status != "Завершено":
                 try:
-                    deadline_date = datetime.datetime.strptime(task["deadline"], "%Y-%m-%d").date()
+                    deadline_date = datetime.datetime.strptime(task.deadline, "%Y-%m-%d").date()
                     if deadline_date < today:
                         overdue_found = True
-                        print(f"Название: {task['name']}, Приоритет: {task['priority']}, "
-                              f"Срок: {task['deadline']}, Статус: {task['status']}")
+                        print(f"Название: {task.name}, Приоритет: {task.priority}, "
+                              f"Срок: {task.deadline}, Статус: {task.status}")
                 except ValueError:
-                    print(f"Ошибка формата даты в задаче '{task['name']}'")
+                    print(f"Ошибка формата даты в задаче '{task.name}'")
         if not overdue_found:
-            print("Просроченных задач нет")
+            print('Просроченных задач нет')
 
 
 def main():
@@ -121,14 +130,14 @@ def main():
         elif choice == "4":
             print("\nЗадачи (по приоритету):")
             for task in manager.sort_by_priority():
-                print(f"Название: {task['name']}, Приоритет: {task['priority']}, "
-                      f"Срок: {task['deadline']}, Статус: {task['status']}")
+                print(f"Название: {task.name}, Приоритет: {task.priority}, "
+                      f"Срок: {task.deadline}, Статус: {task.status}")
 
         elif choice == "5":
             print("\nЗадачи (по сроку):")
             for task in manager.sort_by_deadline():
-                print(f"Название: {task['name']}, Приоритет: {task['priority']}, "
-                      f"Срок: {task['deadline']}, Статус: {task['status']}")
+                print(f"Название: {task.name}, Приоритет: {task.priority}, "
+                      f"Срок: {task.deadline}, Статус: {task.status}")
 
         elif choice == "6":
             filename = input("Введите имя файла (например, tasks.csv): ")
@@ -151,5 +160,6 @@ def main():
 
         else:
             print("Неверный выбор. Попробуйте снова.")
+
 
 main()
