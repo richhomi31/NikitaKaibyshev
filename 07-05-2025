@@ -119,10 +119,16 @@ def main():
             manager.add_task(name, priority, deadline)
 
         elif choice == "2":
+            for task in manager.sort_by_priority():
+                print(f"Название: {task.name}, Приоритет: {task.priority}, "
+                      f"Срок: {task.deadline}, Статус: {task.status}")
             name = input("Введите название задачи для удаления: ")
             manager.remove_task(name)
 
         elif choice == "3":
+            for task in manager.sort_by_priority():
+                print(f"Название: {task.name}, Приоритет: {task.priority}, "
+                      f"Срок: {task.deadline}, Статус: {task.status}")
             name = input("Введите название задачи: ")
             status = input("Введите новый статус (В работе/Завершено): ")
             manager.update_status(name, status)
