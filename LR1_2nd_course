@@ -1,0 +1,68 @@
+В 10
+1)
+Вводится целочисленный массив размера N (N — четное число).. Возвести в квадрат
+все его локальные минимумы (то есть числа, меньшие своих соседей слева и справа).
+Остальные элементы оставить без изменения. Вывести новый массив. 
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+class Prog_LR1 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Введите числа массива в одну строку (четное количество): ");
+        String line = sc.nextLine();
+        String[] strArr = line.split("\\s+");
+        if (strArr.length % 2 != 0) {
+            System.out.println("Ошибка: нечетное количество чисел массива.");
+        } else {
+            int[] intArr = new int[strArr.length];
+            int[] intArr_copy = new int[strArr.length];
+
+            int i;
+            for(i = 0; i < strArr.length; ++i) {
+                boolean isValid = false;
+                String currentElement = strArr[i];
+
+                while(!isValid) {
+                    try {
+                        int num = Integer.parseInt(currentElement.trim());
+                        intArr[i] = num;
+                        intArr_copy[i] = num;
+                        isValid = true;
+                    } catch (NumberFormatException var10) {
+                        System.out.println("Ошибка: " + currentElement + " (i = " + i + ") не является целым числом");
+                        System.err.print("Введите корректную замену элементу №" + i + ": ");
+                        currentElement = sc.nextLine();
+                    }
+                }
+            }
+
+            sc.close();
+            System.out.println("Введенный массив: " + Arrays.toString(intArr));
+
+            for(i = 1; i < intArr.length - 1; ++i) {
+                if (intArr[i] < intArr[i - 1] && intArr[i] < intArr[i + 1]) {
+                    intArr_copy[i] = (int)Math.pow(intArr[i], 2.0);
+                }
+            }
+
+            System.out.println("Получившийся массив: " + Arrays.toString(intArr_copy));
+        }
+    }
+}
+
+Ввод: 4 3 5 7 5    9fff
+Вывод: 
+
+
+
+
+
+
+
+
+
+
+
+
